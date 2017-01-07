@@ -234,8 +234,8 @@ Query.prototype.getCardIds = function(callback) {
   Get list of cards based on info Id
 */
 Query.prototype.getCardsWithInfoId = function(infoId, callback) {
-    var info = this.db.collection('info');
-    info.find({'infoId' : infoId}).toArray(this.stdCallback(callback));
+    var card = this.db.collection('card');
+    card.find({'info' : infoId}).toArray(this.stdCallback(callback));
 }
 
 // UTILITY

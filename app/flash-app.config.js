@@ -11,6 +11,6 @@ angular.
                 template: '<drill></drill>'})
             .when('/add', {
                 template: '<addchinese></addchinese>'})
-            .when('/edit/:cardid', {
-                template: '<editcard></editcard>'})
+            .when('/edit/:infoid', {
+                template: '<editinfo></editinfo>'})
             .otherwise('/drill');}]);

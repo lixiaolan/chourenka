@@ -28,7 +28,7 @@ app.post('/app/next_card_and_info', function(req, res) {
 
 app.post('/app/post_history', function(req, res) {
     query.postHistory(req.body._id, req.body.result, function(result) {
-        res.send(result);                
+        res.send(result);        
     });
 });
 
@@ -53,7 +53,7 @@ app.post('/app/get_info_and_cards', function(req, res) {
 app.post('/app/save_info_and_cards', function(req, res) {
     var cards = req.body.cards;
     var info = req.body.info;
-    var iid = info._id;
+    var iid = "" + info._id;
 
     var dbCalls = 1 + cards.length;
 
@@ -69,7 +69,8 @@ app.post('/app/save_info_and_cards', function(req, res) {
             }
         });
     }
-    
+
+    delete info._id;
     query.saveInfo(iid, info, function(result) {
         dbCalls--;
         if (dbCalls <= 0) {

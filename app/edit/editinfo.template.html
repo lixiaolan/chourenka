@@ -1,0 +1,20 @@
+<div>
+  <button type="button" class="btn btn-success" ng-click="save()">save</button>
+  <table>
+    <tr>
+      <td>Chinese:</td>
+      <td><input type="text" ng-model="data.info.data.chinese"></input></td>
+    </tr>
+    <tr>
+      <td>Pronunciation:</td>
+      <td><input type="text" ng-model="data.info.data.pronunciation"></input></td>
+    </tr>
+    <tr>
+      <td>English:</td>
+      <td><input type="text" ng-model="data.info.data.english"></input></td>
+    </tr>
+  </table>
+  <div ng-repeat="card in data.cards">
+      <dispcard card="card"></dispcard>    
+  </div>
+</div>
