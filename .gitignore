@@ -1,0 +1,8 @@
+*.txt
+*.xml
+run.sh
+data/
+importData/
+convertData/
+node_modules/
+app/bower_components/

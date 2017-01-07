@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>flash</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+
+    <script src="mousetrap/mousetrap.js"></script>
+    <script src="util/callResponseFunctions.js"></script>
+    
+    <link rel="stylesheet" href="flash-app.css" />
+    <link rel="stylesheet" href="card/card.css" />
+    <link rel="stylesheet" href="add/add.css" />
+    
+    <script src="card/card.module.js"></script>
+    <script src="card/hscard.component.js"></script>
+    <script src="edit/edit.module.js"></script>
+    <script src="edit/editcard.component.js"></script>
+    <script src="card/dispcard.component.js"></script>
+    <script src="drill/drill.module.js"></script>
+    <script src="drill/drill.component.js"></script>
+    <script src="add/add.module.js"></script>
+    <script src="add/addchinese.component.js"></script>
+    <script src="add/enterchinese.component.js"></script>
+    <script src="add/addedlist.component.js"></script>
+
+    <script src="flash-app.module.js"></script>
+    <script src="flash-app.config.js"></script>
+
+
+  </head>
+  
+  <body ng-app="flash-app">
+    <!-- <div class="container-fluid"> -->
+    <!--   <drill></drill> -->
+    <!-- </div> -->
+    <div ng-view></div>
+  </body>
+</html>

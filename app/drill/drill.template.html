@@ -1,0 +1,7 @@
+<span>Count: {{count}}</span><span> Id: {{card._id}}</span>
+<div>
+  <hscard card="card"></hscard>
+</div>
+<button type="button" class="btn btn-success" ng-click="$ctrl.postHistoryAndNext(1)">(y)es!</button>
+<button type="button" class="btn btn-warning" ng-click="$ctrl.postHistoryAndNext(0)">(p)ass</button>
+<button type="button" class="btn btn-danger" ng-click="$ctrl.postHistoryAndNext(-1)">(n)ope</button>

@@ -1,0 +1,16 @@
+.flashCard {
+    border-color: black;
+    border-style: double;
+}
+.callBox {
+    border-color: black;
+    border-style: solid;
+    padding: 10px;
+    font-size: 200%;
+}
+.responseBox {
+    border-color: black;
+    border-style: solid;
+    padding: 10px;
+    font-size: 200%
+}    

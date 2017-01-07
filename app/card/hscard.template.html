@@ -1,0 +1,13 @@
+<div class="flashCard" ng-click="$ctrl.hideShow()">
+  <div class="callBox">
+    <div ng-bind-html="call()"></div>
+  </div>
+  <div class="responseBox">
+    <div class="{{$ctrl.notHideClass()}}">
+      <p>???</p>
+    </div>
+    <div class="{{$ctrl.hideClass()}}">
+      <div ng-bind-html="response()"></div>
+    </div>
+  </div>
+</div>
