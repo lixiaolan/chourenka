@@ -1,6 +1,19 @@
-<div ng-repeat="card in list">
+<div ng-repeat="data in list">
   <div class="relative">
-    <button type="button" class="btn btn-danger corner" ng-click="remove(card)">remove</button>
-    <dispcard card="card"></dispcard>    
+    <button type="button" class="btn btn-danger corner" ng-click="remove(data)">remove</button>
+    <table>
+      <tr>
+        <td>Chinese:</td>
+        <td>{{data.info.data.chinese}}</td>
+      </tr>
+      <tr>
+        <td>Pronunciation:</td>
+        <td>{{data.info.data.pronunciation}}</td>
+      </tr>
+      <tr>
+        <td>English:</td>
+        <td>{{data.info.data.english}}</td>
+      </tr>
+    </table>
   </div>
 </div>

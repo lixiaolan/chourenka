@@ -9,18 +9,19 @@ angular.
             
             this.$onInit = function() {
                 that.listinterface.add = $scope.add;
-            }
+            };
             
             $scope.list = [];
 
-            $scope.remove = function(card) {
-                console.log(JSON.stringify(card));
+            $scope.remove = function(data) {
                 for (var i = 0; i < $scope.list.length; i++) {
-                    if (card._id == $scope.list[i]._id) {
+                    if (data.info._id == $scope.list[i].info._id) {
                         $scope.list.splice(i,1);
-                        $http.post('remove_card', JSON.stringify(card)).then(function(response) {});
-                        break;}}}
+                        $http.post('remove_info_and_cards', data).then(function(response) {});
+                        break;}}};
             
-            $scope.add = function(card) {
-                $http.post('add_card', JSON.stringify(card)).then(function(response) {
+            $scope.add = function(data) {
+                console.log(data);
+                $http.post('add_info_and_cards', data).then(function(response) {
+                    console.log(response.data);
                     $scope.list.push(response.data);});}}});

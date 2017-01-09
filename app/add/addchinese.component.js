@@ -3,7 +3,7 @@ angular.
     component('addchinese', {
         templateUrl: 'add/addchinese.template.html',
         controller: function AddChineseController($http, $scope, $sce) {
-            $scope.enterinterface = {bob:'dog'};
+            $scope.enterinterface = {};
             $scope.listinterface = {};
 
             $scope.add = function() {

@@ -149,9 +149,13 @@ Query.prototype.postHistory = function(cardId, result, callback) {
 /*
   Add new card to database
 */
-Query.prototype.postCard = function(call, response, callback) {
+Query.prototype.postCard = function(cardData, callback) {
+
+    //Manually insert the 'mine' tag. This will be changed later.
+    cardData.tags = ['5871e733cd27a225e83f97fb'];
+    
     var card = this.db.collection('card');
-    card.insert({'call': call, 'response': response}, this.stdCallback(callback));
+    card.insert(cardData, this.stdCallback(callback));
 }
 
 /*
@@ -181,9 +185,9 @@ Query.prototype.getCard = function(id, callback) {
 /*
   Add new info to database
 */
-Query.prototype.postInfo = function(info, callback) {
+Query.prototype.postInfo = function(infoData, callback) {
     var info = this.db.collection('info');
-    info.insert(info, this.stdCallback(callback));
+    info.insert(infoData, this.stdCallback(callback));
 }
 
 /*

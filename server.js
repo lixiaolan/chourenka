@@ -40,7 +40,7 @@ app.post('/app/get_card_and_info', function(req, res) {
     });
 });
 app.post('/app/get_info_and_cards', function(req, res) {
-    infoId = req.body._id;
+    var infoId = req.body._id;
     query.getInfo(infoId, function(info) {
         query.getCardsWithInfoId(infoId, function(cards) {
             res.send({'cards': cards, 'info': info});
@@ -84,17 +84,24 @@ app.post('/app/save_info_and_cards', function(req, res) {
 app.post('/app/add_info_and_cards', function(req, res) {
     var cards = req.body.cards;
     var info = req.body.info;
-    query.postInfo(info, function(added) {
-        var iid = added[0]._id;
+    console.log("before add info");
+    query.postInfo(info, function(addedInfoResult) {
+        console.log("after add info");
+        var iid = "" + addedInfoResult.insertedIds[0];
         var dbCalls = cards.length;
 
         for (var i = 0; i < cards.length; i++) {
             var card = cards[i];
-            card.info = "" + iid;
+            card.info = iid;
+            delete card._id; // just in case
             query.postCard(card, function(result) {
                 dbCalls--;
                 if (dbCalls <= 0) {
-                    res.send(result);
+                    query.getInfo(iid, function(infoRes) {
+                        query.getCardsWithInfoId(iid, function(cardsRes) {
+                            res.send({'cards': cardsRes, 'info': infoRes});
+                        });
+                    });
                 }
             });
         }
@@ -112,7 +119,7 @@ app.post('/app/remove_info_and_cards', function(req, res) {
 
     for (var i = 0; i < cards.length; i++) {
         var card = cards[i];
-        var cid = ""+card._id;
+        var cid = "" + card._id;
         query.removeCard(cid, function(result) {
             dbCalls--;
             if (dbCalls <= 0) {

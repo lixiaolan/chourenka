@@ -2,6 +2,7 @@
 *.xml
 run.sh
 data/
+dumps/
 importData/
 convertData/
 node_modules/
