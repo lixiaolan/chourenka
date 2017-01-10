@@ -56,11 +56,10 @@ Query.prototype.nextCardLJJ = function(callback) {
         });
         
         var last = history[history.length - 1];
-        
+
         if ((time - last.time) > interval) {
             return true;
         }
-
         return false;
     }
 }
@@ -104,10 +103,10 @@ Query.prototype.getCardHistory = function(cardArray, callback) {
     };
     var sortObj = {
         $sort : {
-            _id : 1
+            time : 1
         }
     };
-    history.aggregate([matchObj, aggObj, sortObj]).toArray(function(err, array) {
+    history.aggregate([sortObj, matchObj, aggObj]).toArray(function(err, array) {
         assert.equal(err, null);
         var hash = {}
         array.forEach(function(el) {
@@ -219,12 +218,17 @@ Query.prototype.getInfo = function(id, callback) {
 */
 Query.prototype.getCardIds = function(callback) {
     var card = this.db.collection('card');
+    var sortObj = {
+        $sort : {
+            ord : 1
+        }
+    }
     var aggObj = {
         $project : {
             "_id": 1
         }
     }
-    card.aggregate([aggObj]).toArray(function(err, result) {
+    card.aggregate([sortObj, aggObj]).toArray(function(err, result) {
         assert.equal(err, null);
         array = [];
         result.forEach(function(el) {
