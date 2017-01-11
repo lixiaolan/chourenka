@@ -84,27 +84,35 @@ app.post('/app/save_info_and_cards', function(req, res) {
 app.post('/app/add_info_and_cards', function(req, res) {
     var cards = req.body.cards;
     var info = req.body.info;
-    console.log("before add info");
     query.postInfo(info, function(addedInfoResult) {
-        console.log("after add info");
-        var iid = "" + addedInfoResult.insertedIds[0];
-        var dbCalls = cards.length;
+        query.getMaxOrderNumbers(function(maxs) {
+            // Hard code max for the "mine" tag
+            var max = maxs[0];
+            
+            var iid = "" + addedInfoResult.insertedIds[0];
+            var dbCalls = cards.length;
 
-        for (var i = 0; i < cards.length; i++) {
-            var card = cards[i];
-            card.info = iid;
-            delete card._id; // just in case
-            query.postCard(card, function(result) {
-                dbCalls--;
-                if (dbCalls <= 0) {
-                    query.getInfo(iid, function(infoRes) {
-                        query.getCardsWithInfoId(iid, function(cardsRes) {
-                            res.send({'cards': cardsRes, 'info': infoRes});
+            for (var i = 0; i < cards.length; i++) {
+                var card = cards[i];
+                card.info = iid;
+                
+                // Hard coded 2 lines. TODO FIX THIS!!
+                card.ord = { "0": 0, "1": ++max };
+                card.tags = ['5871e733cd27a225e83f97fb'];
+
+                delete card._id; // just in case
+                query.postCard(card, function(result) {
+                    dbCalls--;
+                    if (dbCalls <= 0) {
+                        query.getInfo(iid, function(infoRes) {
+                            query.getCardsWithInfoId(iid, function(cardsRes) {
+                                res.send({'cards': cardsRes, 'info': infoRes});
+                            });
                         });
-                    });
-                }
-            });
-        }
+                    }
+                });
+            }
+        });
     });
 });
 

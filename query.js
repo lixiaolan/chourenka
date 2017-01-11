@@ -149,10 +149,6 @@ Query.prototype.postHistory = function(cardId, result, callback) {
   Add new card to database
 */
 Query.prototype.postCard = function(cardData, callback) {
-
-    //Manually insert the 'mine' tag. This will be changed later.
-    cardData.tags = ['5871e733cd27a225e83f97fb'];
-    
     var card = this.db.collection('card');
     card.insert(cardData, this.stdCallback(callback));
 }
@@ -236,6 +232,30 @@ Query.prototype.getCardIds = function(callback) {
         });
         callback(array);
     });    
+}
+
+/*
+  Get the max order number of cards in a tag group
+*/
+Query.prototype.getMaxOrderNumbers = function(callback) {
+    var card = this.db.collection('card');
+    card.aggregate(
+        [
+            {
+                $group:
+                {
+                    _id: "$ord.0",
+                    max: { $max: "$ord.1" },
+                }
+            }
+        ]
+    ).toArray(function(err, result) {
+        ret = {};
+        result.forEach(function(val) {
+            ret[val._id]=val.max;
+        });
+        callback(ret);
+    });
 }
 
 /*
