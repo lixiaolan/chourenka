@@ -1,4 +1,4 @@
-<span>Count: {{count}}</span><span>Card Id: {{card._id}}</span><span>Info Id: {{card.info._id}}</span>
+<span>Count: {{count}}</span><span ng-click="$ctrl.editInfo()"> | Info Id: <a href="#!/edit/{{card.info._id}}">{{card.info._id}}</a></span>
 <div>
   <hscard card="card"></hscard>
 </div>

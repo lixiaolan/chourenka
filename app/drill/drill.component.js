@@ -31,9 +31,12 @@ angular.
                     that.nextCard();
                 });
             }
-
+            
             Mousetrap.bind('y', function() { that.postHistoryAndNext(1); });
             Mousetrap.bind('p', function() { that.postHistoryAndNext(0); });
             Mousetrap.bind('n', function() { that.postHistoryAndNext(-1); });
+
+            // Get the first card
+            this.nextCard();
         }
     });
