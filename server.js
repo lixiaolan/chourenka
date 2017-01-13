@@ -146,10 +146,16 @@ app.post('/app/remove_info_and_cards', function(req, res) {
 
 // Utility Functions:
 var getCardAndInfo = function(cardId, callback) {
-    query.getCard(cardId, function(card) {
-        query.getInfo(card.info, function(info) {
-            card.info = info;
-            callback(card);
+    query.getTagMap(function(tagMap) {
+        query.getCard(cardId, function(card) {
+            query.getInfo(card.info, function(info) {
+                card.info = info;
+                card.tags = card.tags.map(function(tag) {
+                    var tagId = "" + tag;
+                    return tagMap[tagId];
+                });
+                callback(card);
+            });
         });
     });
 };

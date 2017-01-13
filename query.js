@@ -23,17 +23,24 @@ Query.prototype.nextCardLJJ = function(callback) {
     var time = date.getTime();
     
     this.getCardIds(function(cardArray) {
-        that.getCardHistory(cardArray, function(history) {
+        that.getCardHistory(function(cardHistory) {
             var candidates = [];
-            for (var i = 0; i < history.length; i++) {
-                if (readyToShow(history[i], time)) {
-                    candidates.push(history[i]);
+
+            for (var i = 0; i < cardArray.length; i++) {
+                if (!cardHistory[cardArray[i]]) {
+                    candidates.push(cardArray[i]);
                 }
+                else {
+                    if (readyToShow(cardHistory[cardArray[i]], time)) {
+                        candidates.push(cardArray[i]);
+                    }
+                }
+                
                 if (candidates.length > poolSize) break;
             }
             if (candidates.length > 0) {
-                var rand = candidates[Math.floor(Math.random() * candidates.length)];
-                callback({_id: rand._id});
+                var randId = candidates[Math.floor(Math.random() * candidates.length)];
+                callback({_id: randId});
             }
             else {
                 callback({});
@@ -41,12 +48,11 @@ Query.prototype.nextCardLJJ = function(callback) {
         });
     });
     
-    var readyToShow = function(card, time) {
-        var history = card.history;
-        if (history.length == 0) return true;
+    var readyToShow = function(historyArray, time) {
+        if (historyArray.length == 0) return true;
         var interval = startInterval * 1;
 
-        history.forEach(function(el) {
+        historyArray.forEach(function(el) {
             if (el.result == -1) {
                 interval = Math.max(intervalLowerLimit, interval/scaleFactor);
             }
@@ -55,7 +61,7 @@ Query.prototype.nextCardLJJ = function(callback) {
             }
         });
         
-        var last = history[history.length - 1];
+        var last = historyArray[historyArray.length - 1];
 
         if ((time - last.time) > interval) {
             return true;
@@ -71,22 +77,8 @@ Query.prototype.nextCardLJJ = function(callback) {
    of Ids. This is done with a single query to the history collection
    instead of repeated queries.
 */
-Query.prototype.getCardHistory = function(cardArray, callback) {
+Query.prototype.getCardHistory = function(callback) {
     var history = this.db.collection('history');
-    var matchObj = {
-        $match: {
-            cardId: {
-                $in : cardArray
-            }
-        }
-    };
-    var matchObj2 = {
-        $match: {
-            cardId: {
-                $in : cardArray.slice()
-            }
-        }
-    };
     var aggObj = {
         $group :
         {
@@ -106,18 +98,13 @@ Query.prototype.getCardHistory = function(cardArray, callback) {
             time : 1
         }
     };
-    history.aggregate([sortObj, matchObj, aggObj]).toArray(function(err, array) {
+    history.aggregate([sortObj, aggObj]).toArray(function(err, array) {
         assert.equal(err, null);
         var hash = {}
         array.forEach(function(el) {
-            hash[el._id] = true;
+            hash[el._id] = el.history;
         });
-        cardArray.forEach(function(el) {
-            if (!hash[el]) {
-                array.push({'_id' : el, history : []});
-            }
-        });
-        callback(array);
+        callback(hash);
     });
 }
 
@@ -226,7 +213,7 @@ Query.prototype.getCardIds = function(callback) {
     }
     card.aggregate([sortObj, aggObj]).toArray(function(err, result) {
         assert.equal(err, null);
-        array = [];
+        var array = [];
         result.forEach(function(el) {
             array.push("" + el._id);
         });
@@ -266,6 +253,24 @@ Query.prototype.getCardsWithInfoId = function(infoId, callback) {
     card.find({'info' : infoId}).toArray(this.stdCallback(callback));
 }
 
+/*
+  Get _id to tag name map
+*/
+Query.prototype.getTagMap = function(callback) {
+    var tags = this.db.collection('tags');
+    tags.find({}).toArray(function(err, result) {
+        assert.equal(err, null);
+        var obj = {};
+        result.forEach(function(el) {
+            var elId = el._id + "";
+            delete el._id;
+            delete el.cards;
+            obj[elId] = el;
+        });
+        callback(obj);
+    });    
+}
+
 // UTILITY
 
 /*
@@ -277,5 +282,6 @@ Query.prototype.stdCallback = function(callback) {
         callback(result);
     };
 }
+
 
 module.exports = Query;
