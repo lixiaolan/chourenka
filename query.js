@@ -14,7 +14,7 @@ Query.prototype.setDB = function(indb) {
 */
 Query.prototype.nextCardLJJ = function(callback) {
     var that = this;
-    var poolSize = 51;
+    var poolSize = 90;
     var startInterval = 1000 * 60; // * 60 * 60 * 24; // one day
     var intervalLowerLimit = 1000 * 60;
     var scaleFactor = 4;
@@ -31,7 +31,7 @@ Query.prototype.nextCardLJJ = function(callback) {
                     candidates.push(cardArray[i]);
                 }
                 else {
-                    if (readyToShow(cardHistory[cardArray[i]], time)) {
+                    if (readyToShowTail(cardHistory[cardArray[i]], time)) {
                         candidates.push(cardArray[i]);
                     }
                 }
@@ -48,7 +48,7 @@ Query.prototype.nextCardLJJ = function(callback) {
         });
     });
     
-    var readyToShow = function(historyArray, time) {
+    var readyToShowOriginal = function(historyArray, time) {
         if (historyArray.length == 0) return true;
         var interval = startInterval * 1;
 
@@ -67,6 +67,52 @@ Query.prototype.nextCardLJJ = function(callback) {
             return true;
         }
         return false;
+    }
+
+    var readyToShowTail = function(historyArray, time) {
+        // Looks for last correct response and uses this to determine
+        // interval. Incorrect answers since the correct answer cause
+        // the interval to be divided by the scale factor
+        var newScaleFactor = 2;
+
+        if (historyArray.length == 0) return true;
+
+        if (historyArray.length == 1) {
+            if (timeSinceLast > intervalLowerLimit) return true;
+            else return false;
+        }
+
+        // Find last index with correct outcome.
+        var lci, interval;
+        for (lci = historyArray.length-1; lci >= 0; lci--) {
+            if (historyArray[lci].result == 1) break;
+        }
+
+        // Determine the reference interval
+        if (lci == -1) { 
+            interval = intervalLowerLimit;
+        }
+        else if (lci == 0) {
+            interval = intervalLowerLimit * newScaleFactor;
+        }
+        else  {
+            interval = (historyArray[lci].time - historyArray[lci-1].time) * newScaleFactor;
+        }
+
+        // Adjust for any incorrect responses since the correct one
+        for ( ;lci < historyArray.length; lci++) {
+            if (historyArray[lci].result == -1) {
+                interval /= newScaleFactor;
+            }
+        }
+
+        // Don't go below the minimum interval
+        interval = Math.max(intervalLowerLimit, interval);
+
+        // Check current time against interval
+        var timeSinceLast = time - historyArray[historyArray.length - 1].time;
+        if (timeSinceLast > interval) return true;
+        else return false;
     }
 }
 
