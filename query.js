@@ -99,6 +99,11 @@ Query.prototype.nextCardLJJ = function(callback) {
             interval = (historyArray[lci].time - historyArray[lci-1].time) * newScaleFactor;
         }
 
+        // Check if interval is zero and use old function if so
+        if (interval == 0) {
+            return readyToShowOriginal(historyArray, time);
+        }
+        
         // Adjust for any incorrect responses since the correct one
         for ( ;lci < historyArray.length; lci++) {
             if (historyArray[lci].result == -1) {
